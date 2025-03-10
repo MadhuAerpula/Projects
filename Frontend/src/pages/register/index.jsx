@@ -3,15 +3,42 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Link } from "react-router-dom";
 import { FaUser } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useState } from "react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Register = () => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleRegister = (e) => {
+  const handleRegister = async(e) => {
     e.preventDefault();
-    localStorage.setItem("toastMessage", "Registration successful! 🎉");
-    navigate("/");
+
+    try{
+      const res = await axios.post("http://localhost:4000/api/auth/register", {
+        name,
+        email,
+        password,
+      });
+      if(res.data.success){
+        localStorage.setItem("userId", res.data.userId);
+        toast.success("Registration successful! 🎉");
+        setName("");
+        setEmail("");
+        setPassword("");
+        navigate("/");
+      }else {
+        toast.error(res.data.message);
+      }
+    }catch (err) {
+      toast.error("Error: " + err.response?.data?.message || err.message);
+    }
   }
+
+
   return (
     <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
       <div className="card p-4 shadow" style={{ width: "500px" }}>
@@ -36,6 +63,8 @@ const Register = () => {
               type="text"
               className="form-control"
               placeholder="Enter your name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               required
             />
             <br />
@@ -44,6 +73,8 @@ const Register = () => {
               type="email"
               className="form-control"
               placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
             <br />
@@ -52,6 +83,8 @@ const Register = () => {
               type="password"
               className="form-control"
               placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
           </div>

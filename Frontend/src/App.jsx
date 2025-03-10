@@ -6,7 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 import SignUP from "./pages/SignUp";
 import Register from "./pages/register";
-import Dashboard from "./pages/dashboard";
+import Dashboard from "./pages/dashboard/index.jsx";
 
 const App = () => (
   <>

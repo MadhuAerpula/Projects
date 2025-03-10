@@ -6,7 +6,7 @@ import transactionRoutes from "./Routers/Transactions.js";
 import userRouter from "./Routers/userRouter.js";
 
 const app = express();
-const PORT = 3002;
+const PORT = 4000;
 
 Database();
 

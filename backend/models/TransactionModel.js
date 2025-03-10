@@ -1,5 +1,9 @@
 import mongoose from "mongoose";
 const transactionSchema = new mongoose.Schema({
+    date: {
+        type: Date,
+        required: [true, "Date is required"],
+    },
     title: {
         type: String,
         required: [true, "Title is required"],
@@ -14,26 +18,24 @@ const transactionSchema = new mongoose.Schema({
         type: String,
         required: [true, "Category is required"],  
     },
-    description: {
-        type: String,
-        required: [true, "Description is required"],  
-    },
+    // description: {
+    //     type: String,
+    //     required: [true, "Description is required"],  
+    // },
     transactionType: {
         type: String,
         required: [true, "Transaction Type is required"],
     },
-    date: {
-        type: Date,
-        required: [true, "Date is required"],
-    },
     user:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
+        required: true
+        // ref: "User",
     },
-    createdAt: {
-        type: Date,
-        default: new Date(),
-    }
+    // createdAt: {
+    //     type: Date,
+    //     default: new Date(),
+    // }
 });
 
 const Transaction = mongoose.model('Transaction', transactionSchema);

@@ -4,26 +4,52 @@ import { Link } from "react-router-dom";
 import { FaUser } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import axios from "axios";
+import { useState } from "react";
 import { toast } from "react-toastify";
-import { useLocation } from "react-router-dom";
+import "react-toastify/dist/ReactToastify.css";
+
+//toast.configure();
 
 const SignUP = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const handleLogin = (e) => {
+
+  const handleLogin = async (e) => {
     e.preventDefault();
     // Simulate successful login
-    localStorage.setItem("toastMessage", "Login successful! 🎉");
-    navigate("/dashboard");
+    try {
+      const res = await axios.post("http://localhost:4000/api/auth/login", {
+        email,
+        password,
+      });
+      if (res.status === 200 && res.data.userId) {
+        localStorage.setItem("userId", res.data.user._id); // Store id for authentication
+        // console.log("Stored User ID:", res.data.user._id);
+        toast.success("Login successful! 🎉");
+        setEmail("");
+        setPassword("");
+        navigate("/dashboard");
+      } else {
+        toast.error("Login failed: User ID not found in response");
+      }
+    } catch (err) {
+      // toast.error("Error: " + err.response?.data?.message || err.message);
+      // console.error("Login failed:", err.response?.data || err.message);
+      toast.error("Invalid Credentials");
+    }
+    // localStorage.setItem("toastMessage", "Login successful! 🎉");
+    // navigate("/dashboard");
   };
 
-  useEffect(() => {
-    const message = localStorage.getItem("toastMessage");
-    if (message) {
-      toast.success(message);
-      localStorage.removeItem("toastMessage"); // Show toast if a message exists
-    }
-  }, []);
-
+  // useEffect(() => {
+  //   const message = localStorage.getItem("toastMessage");
+  //   if (message) {
+  //     toast.success(message);
+  //     localStorage.removeItem("toastMessage"); // Show toast if a message exists
+  //   }
+  // }, []);
 
   return (
     <div className="d-flex justify-content-center align-items-center vh-100 bg-light ">
@@ -47,6 +73,8 @@ const SignUP = () => {
               type="email"
               className="form-control"
               placeholder="Enter email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
             <br />
@@ -55,6 +83,8 @@ const SignUP = () => {
               type="password"
               className="form-control"
               placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
           </div>

@@ -34,10 +34,10 @@ export const registerControllers = async (req, res, next) => {
             password: hashedPassword, 
         });
 
-        return res.status(200).json({
+        return res.status(201).json({
             success: true,
             message: "User Created Successfully",
-            user: newUser
+            userId: newUser._id,
         });
     }
     catch(err){
@@ -78,13 +78,14 @@ export const loginControllers = async (req, res, next) => {
                 message: "Incorrect Email or Password",
             }); 
         }
-
-        delete user.password;
+        const userObj = user.toObject();
+        delete userObj.password;
 
         return res.status(200).json({
             success: true,
             message: `Welcome back, ${user.name}`,
-            user,
+            userId: user._id, // Send only userId
+            user: userObj, // Send sanitized user data
         });
 
     }
